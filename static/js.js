@@ -67,6 +67,24 @@ function insertEntry(entry) {
     document.querySelector('#addscore .alert').innerHTML = 'RE-ENTER SCORE!';
   }
   else {
-    insertEntry(entry);
+    fetch('/scores', {
+      method: 'POST',
+      headers: {'Content-type': 'application/json'},
+      body: JSON.stringify(entry)
+    })
+    .then(response => response.json())
+    .then (data => {
+      insertEntry(entry)
+    });
   }
 });
+
+// load scores_list
+
+fetch('/scores', { method: 'GET'})
+  .then(response => response.json())
+  .then(data => {
+    for (let i=0; i<data.length; i++){
+      insertEntry([data[i][1], data[i][2], data[i][3]])
+    }
+  })
